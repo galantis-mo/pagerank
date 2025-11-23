@@ -26,7 +26,7 @@ import argparse, textwrap, math
 def save_to_csv(decompressor, csv_path:str, limit:int, comp_space):
     # Open the file in write mode
     file_csv = open(csv_path, "w")
-    file_csv.write('"parent";"child')
+    file_csv.write('"";"')
 
     # Decompressed data and tracking current parent
     data = ""
@@ -127,6 +127,7 @@ if __name__ == '__main__':
     parser.add_argument('-tl', '--type_limit', type=str, choices=['SIZE', 'TRIPLE'], default="SIZE", help="The type of limit considered use 'SIZE' in MB and 'TRIPLE' as a int.")
     parser.add_argument('-l', '--limit', type=int, default=1, help='The size limit in type_limit of file.')
     parser.add_argument('-S', '--save_comp', action="store_true" , help="Saves the zip in data with to path ~/data/original.bz2")
+    # parser.add_argument('--by_pair', action="store_true" , help="Format results in pair of parent-child")
 
     
     args = parser.parse_args()   
