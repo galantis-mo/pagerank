@@ -31,8 +31,10 @@ IMAGE_VERSION="${IMAGE_VERSION:-2.1-debian11}"
 NO_EXTERNAL_IP="${NO_EXTERNAL_IP:-false}"
 SUBNET="${SUBNET:-}"
 
-# Fichiers / chemins
-GCS_JOB_PATH="gs://${BUCKET}/jobs/wordcount.py"
+# Fichiers / chemins vers les job id
+GCS_JOB_PATH_DF="gs://${BUCKET}/jobs/df_pagerank.py"
+GCS_JOB_PATH_RDD="gs://${BUCKET}/jobs/rdd_pagerank.py"
+
 GCS_INPUT="gs://${BUCKET}/data/wikilinks.csv"
 GCS_OUTPUT_BASE="gs://${BUCKET}/outputs/wikilinks-$(date +%s)"
 LOCAL_OUT_DIR="outputs/wikilinks"
@@ -66,23 +68,26 @@ else
   echo "Bucket existe."
 fi
 
-# Upload du job PySpark
 
-# TODO changer le nom du fichier python par le nom du fichier python
-echo "Upload du job src/truc.py -> ${GCS_JOB_PATH}"
-gsutil cp -n "spark/truc.py" "$GCS_JOB_PATH" || echo "Le job existe déjà sur GCS ou l'upload a été ignoré (option -n)."
+
+#======================================================================================================================
+#======================================================================================================================
+#======================================================================================================================
+
+echo "Upload du job src/df_pagerank.py -> ${GCS_JOB_PATH_DF}"
+gsutil cp -n "spark/df_pagerank.py" "$GCS_JOB_PATH_DF" || echo "Le job existe déjà sur GCS ou l'upload a été ignoré (option -n)."
 
 # Téléchargement de wikilinks si absent
-if gsutil -q stat "$GCS_INPUT"; then
-  echo "wikilinks déjà présent dans ${GCS_INPUT}."
-else
-  echo "Téléchargement de Moby Dick depuis Project Gutenberg..."
-  MOBY_URL="https://www.gutenberg.org/files/2701/2701-0.txt"
-  OUT_FILE="$TMPDIR/mobydick.txt"
-  curl -L "$MOBY_URL" -o "$OUT_FILE"
-  echo "Upload de Moby Dick vers ${GCS_INPUT}..."
-  gsutil cp "$OUT_FILE" "$GCS_INPUT"
-fi
+# if gsutil -q stat "$GCS_INPUT"; then
+#   echo "wikilinks déjà présent dans ${GCS_INPUT}."
+# else
+#   echo "Téléchargement de Moby Dick depuis Project Gutenberg..."
+#   MOBY_URL="https://www.gutenberg.org/files/2701/2701-0.txt"
+#   OUT_FILE="$TMPDIR/mobydick.txt"
+#   curl -L "$MOBY_URL" -o "$OUT_FILE"
+#   echo "Upload de Moby Dick vers ${GCS_INPUT}..."
+#   gsutil cp "$OUT_FILE" "$GCS_INPUT"
+# fi
 
 # Création du cluster Dataproc
 echo "Création du cluster Dataproc ${CLUSTER_NAME} (region=${REGION})..."
@@ -126,7 +131,7 @@ CLUSTER_CREATED=true
 # Soumission du job
 GCS_OUTPUT="$GCS_OUTPUT_BASE"
 echo "Soumission du job pyspark..."
-gcloud dataproc jobs submit pyspark "$GCS_JOB_PATH" \
+gcloud dataproc jobs submit pyspark "$GCS_JOB_PATH_DF" \
   --cluster="$CLUSTER_NAME" \
   --region="$REGION" \
   --project="$PROJECT_ID" \
@@ -145,6 +150,84 @@ else
 fi
 
 echo "Résultats téléchargés dans ${LOCAL_OUT_DIR}"
+#======================================================================================================================
+#======================================================================================================================
+#======================================================================================================================
+
+#======================================================================================================================
+#======================================================================================================================
+#======================================================================================================================
+
+echo "Upload du job src/df_pagerank.py -> ${GCS_JOB_PATH_RDD}"
+gsutil cp -n "spark/df_pagerank.py" "$GCS_JOB_PATH_RDD" || echo "Le job existe déjà sur GCS ou l'upload a été ignoré (option -n)."
+
+# Création du cluster Dataproc
+echo "Création du cluster Dataproc ${CLUSTER_NAME} (region=${REGION})..."
+ZONE_ARG=""
+if [ -n "$ZONE" ]; then
+  ZONE_ARG="--zone=$ZONE"
+fi
+
+SUBNET_ARG=""
+if [ -n "$SUBNET" ]; then
+  SUBNET_ARG="--subnet=$SUBNET"
+fi
+
+NO_ADDRESS_ARG=""
+if [ "$NO_EXTERNAL_IP" = true ]; then
+  NO_ADDRESS_ARG="--no-address"
+fi
+
+if [ "$SINGLE_NODE" = true ]; then
+  gcloud dataproc clusters create "$CLUSTER_NAME" \
+    --project="$PROJECT_ID" \
+    --region="$REGION" \
+    $ZONE_ARG \
+    $SUBNET_ARG \
+    --single-node $NO_ADDRESS_ARG \
+    --image-version="$IMAGE_VERSION"
+else
+  gcloud dataproc clusters create "$CLUSTER_NAME" \
+    --project="$PROJECT_ID" \
+    --region="$REGION" \
+    $ZONE_ARG \
+    $SUBNET_ARG \
+    --master-machine-type=n1-standard-1 \
+    --worker-machine-type=n1-standard-1 \
+    --num-workers=2 \
+    $NO_ADDRESS_ARG \
+    --image-version="$IMAGE_VERSION"
+fi
+CLUSTER_CREATED=true
+
+# Soumission du job
+GCS_OUTPUT="$GCS_OUTPUT_BASE"
+echo "Soumission du job pyspark..."
+gcloud dataproc jobs submit pyspark "$GCS_JOB_PATH_RDD" \
+  --cluster="$CLUSTER_NAME" \
+  --region="$REGION" \
+  --project="$PROJECT_ID" \
+  -- \
+  --input "$GCS_INPUT" --output "$GCS_OUTPUT"
+
+# Récupération des résultats
+echo "Téléchargement des résultats depuis ${GCS_OUTPUT} vers ${LOCAL_OUT_DIR}"
+mkdir -p "$LOCAL_OUT_DIR"
+# Essayer de copier tous les fichiers part-*
+if gsutil -q ls "${GCS_OUTPUT}/*" 2>/dev/null; then
+  gsutil -m cp -r "${GCS_OUTPUT}/*" "$LOCAL_OUT_DIR/"
+else
+  # si la syntaxe ci-dessus échoue (selon la version de gsutil), copiez le répertoire
+  gsutil -m cp -r "${GCS_OUTPUT}" "$LOCAL_OUT_DIR/"
+fi
+
+echo "Résultats téléchargés dans ${LOCAL_OUT_DIR}"
+#======================================================================================================================
+#======================================================================================================================
+#======================================================================================================================
+
+
+
 
 # Suppression du cluster (trap s'en chargera si tout se termine correctement), mais on le fait explicitement ici
 echo "Suppression explicite du cluster ${CLUSTER_NAME}..."
