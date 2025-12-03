@@ -51,8 +51,8 @@ def PageRank_RDD(nombre_iteration:int, input_path:str, output_dir:str, output_di
     ranks = ranks.sort(f.desc("rank"))
 
     end_time = time.time()
-    with open(output_dir_time, 'w') as f:
-        f.write(f"time : {end_time - start_time} seconds for {nombre_iteration} iterations")
+    with open(output_dir_time, 'w') as file:
+        file.write("time : {} seconds for {} iterations".format(end_time - start_time, nombre_iteration))
 
     ranks.coalesce(1).write.mode('overwrite').option('header', True).csv(output_dir)
 
