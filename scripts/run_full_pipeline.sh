@@ -10,12 +10,12 @@ fi
 # Project info
 PROJECT_ID="${PROJECT_ID:-YOUR_PROJECT_ID}"
 BUCKET="${BUCKET:-YOUR_BUCKET_NAME}"
-CLUSTER_NAME="${CLUSTER_NAME:-dataproc-pageRank}"
+CLUSTER_NAME="${CLUSTER_NAME:-dataprocpagepank}"
 REGION="${REGION:-europe-west1}"
 
 ZONE="${ZONE:-}"
 SINGLE_NODE="${SINGLE_NODE:-true}"
-IMAGE_VERSION="${IMAGE_VERSION:-2.1-debian11}"
+IMAGE_VERSION="${IMAGE_VERSION:-2.3-debian12}"
 
 # Security options
 NO_EXTERNAL_IP="${NO_EXTERNAL_IP:-false}"
@@ -114,6 +114,15 @@ fi
 
 CLUSTER_CREATED=true
 
+cleanup() {
+  rm -rf "$TMPDIR"
+  if [ "$CLUSTER_CREATED" = true ]; then
+    echo "Suppression du cluster ${CLUSTER_NAME}..."
+    gcloud dataproc clusters delete "$CLUSTER_NAME" --region="$REGION" --project="$PROJECT_ID" --quiet || true
+  fi
+}
+trap cleanup EXIT
+
 # Soumission du job
 echo "Soumission du job pyspark..."
 gcloud dataproc jobs submit pyspark "$GCS_JOB_PATH_DF" \
@@ -191,7 +200,12 @@ echo "Résultats téléchargés dans ${LOCAL_OUT_DIR}"
 #======================================================================================================================
 # Suppression du cluster
 echo "Suppression explicite du cluster ${CLUSTER_NAME}..."
-gcloud dataproc clusters delete "$CLUSTER_NAME" --region="$REGION" --project="$PROJECT_ID" --quiet
+gcloud dataproc jobs submit pyspark "$GCS_JOB_PATH_DF" \
+  --cluster="$CLUSTER_NAME" \
+  --region="$REGION" \
+  --project="$PROJECT_ID" \
+  -- \
+  --input "$GCS_INPUT" --output "$GCS_OUTPUT
 CLUSTER_CREATED=false
 
 echo "Pipeline terminé avec succès. Les résultats sont disponibles dans ${LOCAL_OUT_DIR}."
