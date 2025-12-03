@@ -27,11 +27,11 @@ GCS_JOB_PATH_DF="gs://${BUCKET}/jobs/df_pagerank.py"
 GCS_JOB_PATH_RDD="gs://${BUCKET}/jobs/rdd_pagerank.py"
 
 GCS_INPUT="gs://${BUCKET}/data/wikilinks.csv"
-GCS_OUTPUT_RDD_BASE="gs://${BUCKET}/outputs/wikilinks-rdd-$(date +%s)"
-GCS_OUTPUT_RDD_TIME="outputs/time-rdd-$(date +%s)"
+GCS_OUTPUT_RDD_BASE="gs://${BUCKET}/outputs/wikilinks-rdd-$(date +"%Y-%m-%d_%H-%M-%S")"
+GCS_OUTPUT_RDD_TIME="outputs/time-rdd-$(date +"%Y-%m-%d_%H-%M-%S")"
 
-GCS_OUTPUT_DF_BASE="gs://${BUCKET}/outputs/wikilinks-df-$(date +%s)"
-GCS_OUTPUT_DF_TIME="outputs/time-df-$(date +%s)"
+GCS_OUTPUT_DF_BASE="gs://${BUCKET}/outputs/wikilinks-df-$(date +"%Y-%m-%d_%H-%M-%S")"
+GCS_OUTPUT_DF_TIME="outputs/time-df-$(date +"%Y-%m-%d_%H-%M-%S")"
 
 LOCAL_OUT_DIR="outputs/wikilinks"
 
@@ -49,6 +49,7 @@ cleanup() {
   if [ "$CLUSTER_CREATED" = true ]; then
     echo "Suppression du cluster ${CLUSTER_NAME}..."
     gcloud dataproc clusters delete "$CLUSTER_NAME" --region="$REGION" --project="$PROJECT_ID" --quiet || true
+
   fi
 }
 trap cleanup EXIT
