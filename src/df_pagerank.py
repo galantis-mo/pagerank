@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import os, sys
+import sys
 
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType, StructField, StringType
@@ -56,11 +56,6 @@ if __name__ == '__main__':
         print("Usage: df_pagerank.py <number_iterations:int> <input_path:str> <output_dir:str>")
         sys.exit(2)
     
-    elif not os.path.exists(sys.argv[2]):
-        print("Usage: df_pagerank.py <number_iterations:int> <input_path:str> <output_dir:str>")
-        print("<input_path:str> does not exists!")
-        sys.exit(2)
-        
     number_iterations = int(sys.argv[1])
     input_path = sys.argv[2]
     output_dir = sys.argv[3]
