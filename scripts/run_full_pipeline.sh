@@ -15,6 +15,7 @@ REGION="${REGION:-europe-west1}"
 
 ZONE="${ZONE:-}"
 SINGLE_NODE="${SINGLE_NODE:-true}"
+NUMBER_WORKERS=1
 IMAGE_VERSION="${IMAGE_VERSION:-2.3-debian12}"
 
 # Security options
@@ -119,8 +120,13 @@ else
     $SUBNET_ARG \
     --master-machine-type=n1-standard-1 \
     --worker-machine-type=n1-standard-1 \
-    --num-workers=2 \
+    --master-boot-disk-size=50GB \
+    --worker-boot-disk-size=50GB \
+  --master-boot-disk-type=pd-ssd \
+  --worker-boot-disk-type=pd-ssd \
+    --num-workers=$NUMBER_WORKERS \
     $NO_ADDRESS_ARG \
+    --properties=yarn:yarn.scheduler.maximum-allocation-mb=14336,yarn:yarn.nodemanager.resource.memory-mb=14336
     --image-version="$IMAGE_VERSION"
 fi
 
