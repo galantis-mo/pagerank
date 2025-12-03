@@ -138,7 +138,7 @@ gcloud dataproc jobs submit pyspark "$GCS_JOB_PATH_DF" \
 echo "Téléchargement des résultats depuis ${GCS_OUTPUT_DF_BASE} vers ${LOCAL_OUT_DIR}"
 mkdir -p "$LOCAL_OUT_DIR"
 gsutil -m cp -r "${GCS_OUTPUT_DF_BASE}" "$LOCAL_OUT_DIR/"
-gsutil -m cp -r "${GCS_OUTPUT_DF_TIME}" "$LOCAL_OUT_DIR/"
+gsutil -m cp -r "gs://${BUCKET}/${GCS_OUTPUT_DF_TIME}" "$LOCAL_OUT_DIR/"
 
 
 echo "Résultats téléchargés dans ${LOCAL_OUT_DIR}"
@@ -160,7 +160,7 @@ gcloud dataproc jobs submit pyspark "$GCS_JOB_PATH_RDD" \
 echo "Téléchargement des résultats depuis ${GCS_OUTPUT_RDD_BASE} vers ${LOCAL_OUT_DIR}"
 mkdir -p "$LOCAL_OUT_DIR"
 gsutil -m cp -r "${GCS_OUTPUT_RDD_BASE}" "$LOCAL_OUT_DIR/"
-gsutil -m cp -r "${GCS_OUTPUT_RDD_TIME}" "$LOCAL_OUT_DIR/"
+gsutil -m cp -r "gs://${BUCKET}/${GCS_OUTPUT_RDD_TIME}" "$LOCAL_OUT_DIR/"
 
 echo "Résultats téléchargés dans ${LOCAL_OUT_DIR}"
 
