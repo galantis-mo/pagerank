@@ -10,7 +10,7 @@ fi
 # Project info
 PROJECT_ID="${PROJECT_ID:-YOUR_PROJECT_ID}"
 BUCKET="${BUCKET:-YOUR_BUCKET_NAME}"
-CLUSTER_NAME=pagerank/data"${CLUSTER_NAME:-dataprocpagepank}"
+CLUSTER_NAME="${CLUSTER_NAME:-dataprocpagepank}"
 REGION="${REGION:-europe-west1}"
 
 ZONE="${ZONE:-}"
@@ -43,7 +43,8 @@ NUMBER_ITERATIONS=1
 
 
 cleanup() {
-  rm -rf "$TMPDIR"
+  rm -rf "$TMPDIR"jobs/
+
   if [ "$CLUSTER_CREATED" = true ]; then
     echo "Suppression du cluster ${CLUSTER_NAME}..."
     gcloud dataproc clusters delete "$CLUSTER_NAME" --region="$REGION" --project="$PROJECT_ID" --quiet || true
