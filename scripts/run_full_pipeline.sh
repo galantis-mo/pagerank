@@ -1,28 +1,18 @@
 #!/usr/bin/env bash
-# Pipeline tout-en-un :
-# 1) Télécharge Moby Dick depuis Project Gutenberg (si pas déjà dans le bucket)
-# 2) Crée le bucket GCS (si nécessaire)
-# 3) Crée un cluster Dataproc
-# 4) Upload du job PySpark et soumission
-# 5) Télécharge les résultats localement
-# 6) Supprime le cluster
-#
 # NOTE: Édite les variables PROJECT_ID et BUCKET en début de script avant exécution.
 set -euo pipefail
 
-# Optional .env support: create a top-level .env file or edit scripts/.env.example
 # If a .env file exists in the repo root it will be sourced and can override defaults.
 if [ -f ".env" ]; then
-  # shellcheck disable=SC1091
   source .env
 fi
 
-# Defaults (can be overridden by .env)
+# Project info
 PROJECT_ID="${PROJECT_ID:-YOUR_PROJECT_ID}"
 BUCKET="${BUCKET:-YOUR_BUCKET_NAME}"
 CLUSTER_NAME="${CLUSTER_NAME:-dataproc-pageRank}"
 REGION="${REGION:-europe-west1}"
-# zone vide -> auto-zone (recommandé)
+
 ZONE="${ZONE:-}"
 SINGLE_NODE="${SINGLE_NODE:-true}"
 IMAGE_VERSION="${IMAGE_VERSION:-2.1-debian11}"
@@ -31,7 +21,7 @@ IMAGE_VERSION="${IMAGE_VERSION:-2.1-debian11}"
 NO_EXTERNAL_IP="${NO_EXTERNAL_IP:-false}"
 SUBNET="${SUBNET:-}"
 
-# Fichiers / chemins vers les job id
+# Chemins vers les jobs
 GCS_JOB_PATH_DF="gs://${BUCKET}/jobs/df_pagerank.py"
 GCS_JOB_PATH_RDD="gs://${BUCKET}/jobs/rdd_pagerank.py"
 
@@ -43,25 +33,18 @@ GCS_OUTPUT_DF_BASE="gs://${BUCKET}/outputs/wikilinks-df-$(date +%s)"
 GCS_OUTPUT_DF_TIME="gs://${BUCKET}/outputs/time-df-$(date +%s)"
 
 LOCAL_OUT_DIR="outputs/wikilinks"
+
 TMPDIR="$(mktemp -d)"
 CLUSTER_CREATED=false
 
+# Conditions des experiences
 LIMIT_SIZE_CSV=1
 NUMBER_ITERATIONS=1
 
-cleanup() {
-  rm -rf "$TMPDIR"
-  if [ "$CLUSTER_CREATED" = true ]; then
-    echo "Suppression du cluster ${CLUSTER_NAME}..."
-    gcloud dataproc clusters delete "$CLUSTER_NAME" --region="$REGION" --project="$PROJECT_ID" --quiet || true
-  fi
-}
-trap cleanup EXIT
-
+#======================================================================================================================
 # Vérifications rapides
 command -v gcloud >/dev/null 2>&1 || { echo "gcloud introuvable. Installe et configure le SDK Google Cloud."; exit 1; }
 command -v gsutil >/dev/null 2>&1 || { echo "gsutil introuvable. Installe et configure le SDK Google Cloud."; exit 1; }
-command -v curl >/dev/null 2>&1 || { echo "curl introuvable. Installe curl."; exit 1; }
 
 if [ "$PROJECT_ID" = "YOUR_PROJECT_ID" ] || [ "$BUCKET" = "YOUR_BUCKET_NAME" ]; then
   echo "Veuillez éditer ${BASH_SOURCE[0]} et renseigner PROJECT_ID et BUCKET avant d'exécuter."
@@ -76,15 +59,7 @@ else
   echo "Bucket existe."
 fi
 
-
-
 #======================================================================================================================
-#======================================================================================================================
-#======================================================================================================================
-
-echo "Upload du job src/df_pagerank.py -> ${GCS_JOB_PATH_DF}"
-gsutil cp -n "src/df_pagerank.py" "$GCS_JOB_PATH_DF" || echo "Le job existe déjà sur GCS ou l'upload a été ignoré (option -n)."
-
 # Téléchargement de wikilinks si absent
 if gsutil -q stat "$GCS_INPUT"; then
   echo "Wikilinks déjà présent dans ${GCS_INPUT}."
@@ -92,6 +67,12 @@ else
   echo "Téléchargement des liens wikilinks"
   python src/data_fetcher $LIMIT_SIZE_CSV
 fi
+
+#======================================================================================================================
+# Experience avec les dataframes
+
+echo "Upload du job src/df_pagerank.py -> ${GCS_JOB_PATH_DF}"
+gsutil cp -n "src/df_pagerank.py" "$GCS_JOB_PATH_DF" || echo "Le job existe déjà sur GCS ou l'upload a été ignoré (option -n)."
 
 # Création du cluster Dataproc
 echo "Création du cluster Dataproc ${CLUSTER_NAME} (region=${REGION})..."
@@ -130,6 +111,7 @@ else
     $NO_ADDRESS_ARG \
     --image-version="$IMAGE_VERSION"
 fi
+
 CLUSTER_CREATED=true
 
 # Soumission du job
@@ -146,14 +128,9 @@ mkdir -p "$LOCAL_OUT_DIR"
 gsutil -m cp -r "${GCS_OUTPUT_DF_BASE}" "$LOCAL_OUT_DIR/"
 
 echo "Résultats téléchargés dans ${LOCAL_OUT_DIR}"
-#======================================================================================================================
-#======================================================================================================================
-#======================================================================================================================
 
 #======================================================================================================================
-#======================================================================================================================
-#======================================================================================================================
-
+# Experience avec les rdd
 echo "Upload du job src/rdd_pagerank.py -> ${GCS_JOB_PATH_RDD}"
 gsutil cp -n "src/rdd_pagerank.py" "$GCS_JOB_PATH_RDD" || echo "Le job existe déjà sur GCS ou l'upload a été ignoré (option -n)."
 
@@ -210,14 +187,9 @@ mkdir -p "$LOCAL_OUT_DIR"
 gsutil -m cp -r "${GCS_OUTPUT_RDD_BASE}" "$LOCAL_OUT_DIR/"
 
 echo "Résultats téléchargés dans ${LOCAL_OUT_DIR}"
+
 #======================================================================================================================
-#======================================================================================================================
-#======================================================================================================================
-
-
-
-
-# Suppression du cluster (trap s'en chargera si tout se termine correctement), mais on le fait explicitement ici
+# Suppression du cluster
 echo "Suppression explicite du cluster ${CLUSTER_NAME}..."
 gcloud dataproc clusters delete "$CLUSTER_NAME" --region="$REGION" --project="$PROJECT_ID" --quiet
 CLUSTER_CREATED=false
