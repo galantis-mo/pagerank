@@ -2,6 +2,8 @@
 
 import sys
 
+from google.cloud import storage
+
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType, StructField, StringType
 import pyspark.sql.functions as f
@@ -12,7 +14,7 @@ schema = StructType([
     StructField("urlchildren", StringType(), True)
 ])
 
-def PageRank_DataFrame(nombre_iteration:int, input_path:str, output_dir:str, output_dir_time:str):
+def PageRank_DataFrame(nombre_iteration:int, input_path:str, output_dir:str, project_id:str, bucket_name:str, time_path:str):
     spark = SparkSession.builder.appName("pagerank_df").getOrCreate()
     sc = spark.sparkContext
 
@@ -39,10 +41,14 @@ def PageRank_DataFrame(nombre_iteration:int, input_path:str, output_dir:str, out
                     .withColumn("rank",f.col("rankCount") * 0.85 + 0.15)\
                     .select("urlchildren","rank")\
                     .withColumnRenamed("urlchildren","urlid")
-        
+    
     end_time = time.time()
-    with open(output_dir_time, 'w') as file:
-        file.write("time : {} seconds for {} iterations".format(end_time - start_time, nombre_iteration))
+    
+    # Sauvegarde du temps d'exécution
+    storage_client = storage.Client(project_id)
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(time_path)
+    blob.upload_from_string("time : {} seconds for {} iterations".format(end_time - start_time, nombre_iteration))
 
     # Sauvegarde des résultats
     ranks = ranks.sort(f.desc("rank"))
@@ -52,13 +58,16 @@ def PageRank_DataFrame(nombre_iteration:int, input_path:str, output_dir:str, out
     spark.stop()
     
 if __name__ == '__main__':
-    if len(sys.argv) < 4 and not sys.argv[1].isdigit():
-        print("Usage: df_pagerank.py <number_iterations:int> <input_path:str> <output_dir:str>")
+    if len(sys.argv) < 7 and not sys.argv[1].isdigit():
+        print("Usage: df_pagerank.py <number_iterations:int> <input_path:str> <output_dir:str> <project_id:str> <bucket_name:str> <time_path:str>")
         sys.exit(2)
     
     number_iterations = int(sys.argv[1])
     input_path = sys.argv[2]
     output_dir = sys.argv[3]
-    output_dir_time = sys.argv[4]
+    project_id = sys.argv[4]
+    bucket_name = sys.argv[5]
+    time_path = sys.argv[6]
+    
 
-    PageRank_DataFrame(number_iterations, input_path, output_dir, output_dir_time)
+    PageRank_DataFrame(number_iterations, input_path, output_dir, project_id, bucket_name, time_path)

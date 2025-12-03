@@ -2,6 +2,8 @@
 
 import sys
 
+from google.cloud import storage
+
 from operator import add
 from pyspark.sql import SparkSession
 import pyspark.sql.functions as f
@@ -19,7 +21,7 @@ def csv_reader(s):
 def to_csv(data):
     return ','.join(str(d) for d in data)
 
-def PageRank_RDD(nombre_iteration:int, input_path:str, output_dir:str, output_dir_time:str):
+def PageRank_RDD(nombre_iteration:int, input_path:str, output_dir:str, project_id:str, bucket_name:str, time_path:str):
     # Creation de l'application
     spark = SparkSession.builder.appName("pagerank_rdd").getOrCreate()
     sc = spark.sparkContext
@@ -51,8 +53,12 @@ def PageRank_RDD(nombre_iteration:int, input_path:str, output_dir:str, output_di
     ranks = ranks.sort(f.desc("rank"))
 
     end_time = time.time()
-    with open(output_dir_time, 'w') as file:
-        file.write("time : {} seconds for {} iterations".format(end_time - start_time, nombre_iteration))
+    
+    # Sauvegarde du temps d'exécution
+    storage_client = storage.Client(project_id)
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(time_path)
+    blob.upload_from_string("time : {} seconds for {} iterations".format(end_time - start_time, nombre_iteration))
 
     ranks.coalesce(1).write.mode('overwrite').option('header', True).csv(output_dir)
 
@@ -60,15 +66,16 @@ def PageRank_RDD(nombre_iteration:int, input_path:str, output_dir:str, output_di
     spark.stop()
     
 if __name__ == '__main__':
-    if len(sys.argv) < 4 and not sys.argv[1].isdigit():
-        print("Usage: df_pagerank.py <number_iterations:int> <input_path:str> <output_dir:str>")
+    if len(sys.argv) < 7 and not sys.argv[1].isdigit():
+        print("Usage: rdd_pagerank.py <number_iterations:int> <input_path:str> <output_dir:str> <project_id:str> <bucket_name:str> <time_path:str>")
         sys.exit(2)
-
-
+    
     number_iterations = int(sys.argv[1])
     input_path = sys.argv[2]
     output_dir = sys.argv[3]
-    output_dir_time = sys.argv[4]
+    project_id = sys.argv[4]
+    bucket_name = sys.argv[5]
+    time_path = sys.argv[6]
 
 
-    PageRank_RDD(number_iterations, input_path, output_dir, output_dir_time)
+    PageRank_RDD(number_iterations, input_path, output_dir, project_id, bucket_name, time_path)
