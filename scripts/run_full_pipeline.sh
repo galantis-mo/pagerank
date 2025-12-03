@@ -129,7 +129,7 @@ gcloud dataproc jobs submit pyspark "$GCS_JOB_PATH_DF" \
   --cluster="$CLUSTER_NAME" \
   --region="$REGION" \
   --project="$PROJECT_ID" \
-  -- $NUMBER_ITERATIONS $GCS_INPUT $GCS_OUTPUT_DF_BASE $GCS_OUTPUT_DF_TIME
+  -- $NUMBER_ITERATIONS $GCS_INPUT $GCS_OUTPUT_DF_BASE $PROJECT_ID $BUCKET $GCS_OUTPUT_DF_TIME
 
 # Récupération des résultats
 echo "Téléchargement des résultats depuis ${GCS_OUTPUT_DF_BASE} vers ${LOCAL_OUT_DIR}"
@@ -188,7 +188,7 @@ gcloud dataproc jobs submit pyspark "$GCS_JOB_PATH_RDD" \
   --cluster="$CLUSTER_NAME" \
   --region="$REGION" \
   --project="$PROJECT_ID" \
-  -- $NUMBER_ITERATIONS $GCS_INPUT $GCS_OUTPUT_RDD_BASE $GCS_OUTPUT_RDD_TIME
+  -- $NUMBER_ITERATIONS $GCS_INPUT $GCS_OUTPUT_RDD_BASE $PROJECT_ID $BUCKET $GCS_OUTPUT_RDD_TIME
 
 # Récupération des résultats
 echo "Téléchargement des résultats depuis ${GCS_OUTPUT_RDD_BASE} vers ${LOCAL_OUT_DIR}"
