@@ -83,4 +83,4 @@ if __name__ == '__main__':
         exit(2)
     
     # Appel de la méthode
-    DataFetcher(int(sys.argv[2])*1000000)
+    DataFetcher(int(sys.argv[1])*1000000)
