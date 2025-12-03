@@ -41,6 +41,8 @@ LOCAL_OUT_DIR="outputs/wikilinks"
 TMPDIR="$(mktemp -d)"
 CLUSTER_CREATED=false
 
+LIMIT_SIZE_CSV=1
+
 cleanup() {
   rm -rf "$TMPDIR"
   if [ "$CLUSTER_CREATED" = true ]; then
@@ -75,19 +77,15 @@ fi
 #======================================================================================================================
 
 echo "Upload du job src/df_pagerank.py -> ${GCS_JOB_PATH_DF}"
-gsutil cp -n "spark/df_pagerank.py" "$GCS_JOB_PATH_DF" || echo "Le job existe déjà sur GCS ou l'upload a été ignoré (option -n)."
+gsutil cp -n "src/df_pagerank.py" "$GCS_JOB_PATH_DF" || echo "Le job existe déjà sur GCS ou l'upload a été ignoré (option -n)."
 
 # Téléchargement de wikilinks si absent
-# if gsutil -q stat "$GCS_INPUT"; then
-#   echo "wikilinks déjà présent dans ${GCS_INPUT}."
-# else
-#   echo "Téléchargement de Moby Dick depuis Project Gutenberg..."
-#   MOBY_URL="https://www.gutenberg.org/files/2701/2701-0.txt"
-#   OUT_FILE="$TMPDIR/mobydick.txt"
-#   curl -L "$MOBY_URL" -o "$OUT_FILE"
-#   echo "Upload de Moby Dick vers ${GCS_INPUT}..."
-#   gsutil cp "$OUT_FILE" "$GCS_INPUT"
-# fi
+if gsutil -q stat "$GCS_INPUT"; then
+  echo "Wikilinks déjà présent dans ${GCS_INPUT}."
+else
+  echo "Téléchargement des liens wikilinks"
+  python src/data_fetcher $LIMIT_SIZE_CSV
+fi
 
 # Création du cluster Dataproc
 echo "Création du cluster Dataproc ${CLUSTER_NAME} (region=${REGION})..."
