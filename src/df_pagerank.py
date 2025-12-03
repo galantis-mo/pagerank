@@ -51,7 +51,7 @@ def PageRank_DataFrame(nombre_iteration:int, input_path:str, output_dir:str, pro
     storage_client = storage.Client(project_id)
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(time_path)
-    blob.upload_from_string("time : {} seconds for {} iterations".format(end_time - start_time, nombre_iteration))
+    blob.upload_from_string("time,iterations\n{},{}".format(end_time - start_time, nombre_iteration))
     
     # Sauvegarde des résultats
     ranks.write.mode('overwrite').option('header', True).csv(output_dir)
