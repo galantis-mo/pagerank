@@ -42,6 +42,9 @@ def PageRank_DataFrame(nombre_iteration:int, input_path:str, output_dir:str, pro
                     .select("urlchildren","rank")\
                     .withColumnRenamed("urlchildren","urlid")
     
+    # Calculer les résultats
+    ranks = ranks.sort(f.desc("rank"))
+    ranks = ranks.coalesce(1)
     end_time = time.time()
     
     # Sauvegarde du temps d'exécution
@@ -49,10 +52,9 @@ def PageRank_DataFrame(nombre_iteration:int, input_path:str, output_dir:str, pro
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(time_path)
     blob.upload_from_string("time : {} seconds for {} iterations".format(end_time - start_time, nombre_iteration))
-
+    
     # Sauvegarde des résultats
-    ranks = ranks.sort(f.desc("rank"))
-    ranks.coalesce(1).write.mode('overwrite').option('header', True).csv(output_dir)
+    ranks.write.mode('overwrite').option('header', True).csv(output_dir)
     
     print('Pagerank written to', output_dir)
     spark.stop()

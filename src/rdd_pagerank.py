@@ -50,8 +50,7 @@ def PageRank_RDD(nombre_iteration:int, input_path:str, output_dir:str, project_i
     
     # Sauvegarde des résultats
     ranks = spark.createDataFrame(ranks, ['urlid', 'rank'])
-    ranks = ranks.sort(f.desc("rank"))
-
+    ranks = ranks.sort(f.desc("rank")).coalesce(1)
     end_time = time.time()
     
     # Sauvegarde du temps d'exécution
@@ -60,7 +59,8 @@ def PageRank_RDD(nombre_iteration:int, input_path:str, output_dir:str, project_i
     blob = bucket.blob(time_path)
     blob.upload_from_string("time : {} seconds for {} iterations".format(end_time - start_time, nombre_iteration))
 
-    ranks.coalesce(1).write.mode('overwrite').option('header', True).csv(output_dir)
+    # Sauvegarde des résultats
+    ranks.write.mode('overwrite').option('header', True).csv(output_dir)
 
     print('Pagerank written to', output_dir)
     spark.stop()
