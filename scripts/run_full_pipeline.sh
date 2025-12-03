@@ -36,12 +36,18 @@ GCS_JOB_PATH_DF="gs://${BUCKET}/jobs/df_pagerank.py"
 GCS_JOB_PATH_RDD="gs://${BUCKET}/jobs/rdd_pagerank.py"
 
 GCS_INPUT="gs://${BUCKET}/data/wikilinks.csv"
-GCS_OUTPUT_BASE="gs://${BUCKET}/outputs/wikilinks-$(date +%s)"
+GCS_OUTPUT_RDD_BASE="gs://${BUCKET}/outputs/wikilinks-rdd-$(date +%s)"
+GCS_OUTPUT_RDD_TIME="gs://${BUCKET}/outputs/time-rdd-$(date +%s)"
+
+GCS_OUTPUT_DF_BASE="gs://${BUCKET}/outputs/wikilinks-df-$(date +%s)"
+GCS_OUTPUT_DF_TIME="gs://${BUCKET}/outputs/time-df-$(date +%s)"
+
 LOCAL_OUT_DIR="outputs/wikilinks"
 TMPDIR="$(mktemp -d)"
 CLUSTER_CREATED=false
 
 LIMIT_SIZE_CSV=1
+NUMBER_ITERATIONS=1
 
 cleanup() {
   rm -rf "$TMPDIR"
@@ -127,25 +133,17 @@ fi
 CLUSTER_CREATED=true
 
 # Soumission du job
-GCS_OUTPUT="$GCS_OUTPUT_BASE"
 echo "Soumission du job pyspark..."
 gcloud dataproc jobs submit pyspark "$GCS_JOB_PATH_DF" \
   --cluster="$CLUSTER_NAME" \
   --region="$REGION" \
   --project="$PROJECT_ID" \
-  -- \
-  --input "$GCS_INPUT" --output "$GCS_OUTPUT"
+  -- $NUMBER_ITERATIONS $GCS_INPUT $GCS_OUTPUT_DF_BASE $GCS_OUTPUT_DF_TIME
 
 # Récupération des résultats
-echo "Téléchargement des résultats depuis ${GCS_OUTPUT} vers ${LOCAL_OUT_DIR}"
+echo "Téléchargement des résultats depuis ${GCS_OUTPUT_DF_BASE} vers ${LOCAL_OUT_DIR}"
 mkdir -p "$LOCAL_OUT_DIR"
-# Essayer de copier tous les fichiers part-*
-if gsutil -q ls "${GCS_OUTPUT}/*" 2>/dev/null; then
-  gsutil -m cp -r "${GCS_OUTPUT}/*" "$LOCAL_OUT_DIR/"
-else
-  # si la syntaxe ci-dessus échoue (selon la version de gsutil), copiez le répertoire
-  gsutil -m cp -r "${GCS_OUTPUT}" "$LOCAL_OUT_DIR/"
-fi
+gsutil -m cp -r "${GCS_OUTPUT_DF_BASE}" "$LOCAL_OUT_DIR/"
 
 echo "Résultats téléchargés dans ${LOCAL_OUT_DIR}"
 #======================================================================================================================
@@ -199,25 +197,17 @@ fi
 CLUSTER_CREATED=true
 
 # Soumission du job
-GCS_OUTPUT="$GCS_OUTPUT_BASE"
 echo "Soumission du job pyspark..."
 gcloud dataproc jobs submit pyspark "$GCS_JOB_PATH_RDD" \
   --cluster="$CLUSTER_NAME" \
   --region="$REGION" \
   --project="$PROJECT_ID" \
-  -- \
-  --input "$GCS_INPUT" --output "$GCS_OUTPUT"
+  -- $NUMBER_ITERATIONS $GCS_INPUT $GCS_OUTPUT_RDD_BASE $GCS_OUTPUT_RDD_TIME
 
 # Récupération des résultats
-echo "Téléchargement des résultats depuis ${GCS_OUTPUT} vers ${LOCAL_OUT_DIR}"
+echo "Téléchargement des résultats depuis ${GCS_OUTPUT_RDD_BASE} vers ${LOCAL_OUT_DIR}"
 mkdir -p "$LOCAL_OUT_DIR"
-# Essayer de copier tous les fichiers part-*
-if gsutil -q ls "${GCS_OUTPUT}/*" 2>/dev/null; then
-  gsutil -m cp -r "${GCS_OUTPUT}/*" "$LOCAL_OUT_DIR/"
-else
-  # si la syntaxe ci-dessus échoue (selon la version de gsutil), copiez le répertoire
-  gsutil -m cp -r "${GCS_OUTPUT}" "$LOCAL_OUT_DIR/"
-fi
+gsutil -m cp -r "${GCS_OUTPUT_RDD_BASE}" "$LOCAL_OUT_DIR/"
 
 echo "Résultats téléchargés dans ${LOCAL_OUT_DIR}"
 #======================================================================================================================
