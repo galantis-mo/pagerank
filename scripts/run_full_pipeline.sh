@@ -10,7 +10,7 @@ fi
 # Project info
 PROJECT_ID="${PROJECT_ID:-YOUR_PROJECT_ID}"
 BUCKET="${BUCKET:-YOUR_BUCKET_NAME}"
-CLUSTER_NAME="${CLUSTER_NAME:-dataprocpagepank}"
+CLUSTER_NAME=pagerank/data"${CLUSTER_NAME:-dataprocpagepank}"
 REGION="${REGION:-europe-west1}"
 
 ZONE="${ZONE:-}"
@@ -40,6 +40,17 @@ CLUSTER_CREATED=false
 # Conditions des experiences
 LIMIT_SIZE_CSV=1
 NUMBER_ITERATIONS=1
+
+
+cleanup() {
+  rm -rf "$TMPDIR"
+  if [ "$CLUSTER_CREATED" = true ]; then
+    echo "Suppression du cluster ${CLUSTER_NAME}..."
+    gcloud dataproc clusters delete "$CLUSTER_NAME" --region="$REGION" --project="$PROJECT_ID" --quiet || true
+  fi
+}
+trap cleanup EXIT
+
 
 #======================================================================================================================
 # Vérifications rapides
@@ -114,14 +125,6 @@ fi
 
 CLUSTER_CREATED=true
 
-cleanup() {
-  rm -rf "$TMPDIR"
-  if [ "$CLUSTER_CREATED" = true ]; then
-    echo "Suppression du cluster ${CLUSTER_NAME}..."
-    gcloud dataproc clusters delete "$CLUSTER_NAME" --region="$REGION" --project="$PROJECT_ID" --quiet || true
-  fi
-}
-trap cleanup EXIT
 
 # Soumission du job
 echo "Soumission du job pyspark..."
@@ -135,6 +138,8 @@ gcloud dataproc jobs submit pyspark "$GCS_JOB_PATH_DF" \
 echo "Téléchargement des résultats depuis ${GCS_OUTPUT_DF_BASE} vers ${LOCAL_OUT_DIR}"
 mkdir -p "$LOCAL_OUT_DIR"
 gsutil -m cp -r "${GCS_OUTPUT_DF_BASE}" "$LOCAL_OUT_DIR/"
+gsutil -m cp -r "${GCS_OUTPUT_DF_TIME}" "$LOCAL_OUT_DIR/"
+
 
 echo "Résultats téléchargés dans ${LOCAL_OUT_DIR}"
 
@@ -142,45 +147,6 @@ echo "Résultats téléchargés dans ${LOCAL_OUT_DIR}"
 # Experience avec les rdd
 echo "Upload du job src/rdd_pagerank.py -> ${GCS_JOB_PATH_RDD}"
 gsutil cp -n "src/rdd_pagerank.py" "$GCS_JOB_PATH_RDD" || echo "Le job existe déjà sur GCS ou l'upload a été ignoré (option -n)."
-
-# Création du cluster Dataproc
-echo "Création du cluster Dataproc ${CLUSTER_NAME} (region=${REGION})..."
-ZONE_ARG=""
-if [ -n "$ZONE" ]; then
-  ZONE_ARG="--zone=$ZONE"
-fi
-
-SUBNET_ARG=""
-if [ -n "$SUBNET" ]; then
-  SUBNET_ARG="--subnet=$SUBNET"
-fi
-
-NO_ADDRESS_ARG=""
-if [ "$NO_EXTERNAL_IP" = true ]; then
-  NO_ADDRESS_ARG="--no-address"
-fi
-
-if [ "$SINGLE_NODE" = true ]; then
-  gcloud dataproc clusters create "$CLUSTER_NAME" \
-    --project="$PROJECT_ID" \
-    --region="$REGION" \
-    $ZONE_ARG \
-    $SUBNET_ARG \
-    --single-node $NO_ADDRESS_ARG \
-    --image-version="$IMAGE_VERSION"
-else
-  gcloud dataproc clusters create "$CLUSTER_NAME" \
-    --project="$PROJECT_ID" \
-    --region="$REGION" \
-    $ZONE_ARG \
-    $SUBNET_ARG \
-    --master-machine-type=n1-standard-1 \
-    --worker-machine-type=n1-standard-1 \
-    --num-workers=2 \
-    $NO_ADDRESS_ARG \
-    --image-version="$IMAGE_VERSION"
-fi
-CLUSTER_CREATED=true
 
 # Soumission du job
 echo "Soumission du job pyspark..."
@@ -194,6 +160,7 @@ gcloud dataproc jobs submit pyspark "$GCS_JOB_PATH_RDD" \
 echo "Téléchargement des résultats depuis ${GCS_OUTPUT_RDD_BASE} vers ${LOCAL_OUT_DIR}"
 mkdir -p "$LOCAL_OUT_DIR"
 gsutil -m cp -r "${GCS_OUTPUT_RDD_BASE}" "$LOCAL_OUT_DIR/"
+gsutil -m cp -r "${GCS_OUTPUT_RDD_TIME}" "$LOCAL_OUT_DIR/"
 
 echo "Résultats téléchargés dans ${LOCAL_OUT_DIR}"
 
