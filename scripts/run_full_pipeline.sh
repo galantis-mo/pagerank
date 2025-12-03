@@ -156,8 +156,8 @@ echo "Résultats téléchargés dans ${LOCAL_OUT_DIR}"
 #======================================================================================================================
 #======================================================================================================================
 
-echo "Upload du job src/df_pagerank.py -> ${GCS_JOB_PATH_RDD}"
-gsutil cp -n "spark/df_pagerank.py" "$GCS_JOB_PATH_RDD" || echo "Le job existe déjà sur GCS ou l'upload a été ignoré (option -n)."
+echo "Upload du job src/rdd_pagerank.py -> ${GCS_JOB_PATH_RDD}"
+gsutil cp -n "src/rdd_pagerank.py" "$GCS_JOB_PATH_RDD" || echo "Le job existe déjà sur GCS ou l'upload a été ignoré (option -n)."
 
 # Création du cluster Dataproc
 echo "Création du cluster Dataproc ${CLUSTER_NAME} (region=${REGION})..."
