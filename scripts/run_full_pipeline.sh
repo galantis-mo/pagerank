@@ -14,8 +14,8 @@ CLUSTER_NAME="${CLUSTER_NAME:-dataprocpagepank}"
 REGION="${REGION:-europe-west1}"
 
 ZONE="${ZONE:-}"
-SINGLE_NODE="${SINGLE_NODE:-true}"
-NUMBER_WORKERS=1
+SINGLE_NODE="${SINGLE_NODE:-false}"
+NUMBER_WORKERS=2
 IMAGE_VERSION="${IMAGE_VERSION:-2.3-debian12}"
 
 # Security options
@@ -39,8 +39,8 @@ TMPDIR="$(mktemp -d)"
 CLUSTER_CREATED=false
 
 # Conditions des experiences
-LIMIT_SIZE_CSV=1
-NUMBER_ITERATIONS=1
+LIMIT_SIZE_CSV=500
+NUMBER_ITERATIONS=3
 
 
 cleanup() {
@@ -119,15 +119,13 @@ else
     --region="$REGION" \
     $ZONE_ARG \
     $SUBNET_ARG \
-    --master-machine-type=n1-standard-1 \
-    --worker-machine-type=n1-standard-1 \
+    --master-machine-type=n4-standard-4 \
+    --worker-machine-type=n4-standard-4 \
     --master-boot-disk-size=50GB \
     --worker-boot-disk-size=50GB \
-  --master-boot-disk-type=pd-ssd \
-  --worker-boot-disk-type=pd-ssd \
     --num-workers=$NUMBER_WORKERS \
     $NO_ADDRESS_ARG \
-    --properties=yarn:yarn.scheduler.maximum-allocation-mb=14336,yarn:yarn.nodemanager.resource.memory-mb=14336
+    --properties=yarn:yarn.scheduler.maximum-allocation-mb=14336,yarn:yarn.nodemanager.resource.memory-mb=14336 \
     --image-version="$IMAGE_VERSION"
 fi
 

@@ -15,6 +15,7 @@ schema = StructType([
 ])
 
 def PageRank_DataFrame(nombre_iteration:int, input_path:str, output_dir:str, project_id:str, bucket_name:str, time_path:str):
+    start_time = time.time()
     spark = SparkSession.builder.appName("pagerank_df").getOrCreate()
     sc = spark.sparkContext
 
@@ -30,7 +31,6 @@ def PageRank_DataFrame(nombre_iteration:int, input_path:str, output_dir:str, pro
     ranks = exploded_df.select(f.col("urlid")).union(exploded_df.select(f.col("urlchildren").alias("urlid"))).distinct()
     ranks = ranks.withColumn("rank", f.lit(1.0))
 
-    start_time = time.time()
     ranks = ranks.repartition(sc.defaultParallelism, "urlid")
 
     # Calcul du pagerank
@@ -71,5 +71,6 @@ if __name__ == '__main__':
     bucket_name = sys.argv[5]
     time_path = sys.argv[6]
     
-
+    start_time = time.time()
     PageRank_DataFrame(number_iterations, input_path, output_dir, project_id, bucket_name, time_path)
+    end_time = time.time()
