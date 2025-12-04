@@ -40,7 +40,7 @@ CLUSTER_CREATED=false
 
 # Conditions des experiences
 LIMIT_SIZE_CSV=500
-NUMBER_ITERATIONS=3
+NUMBER_ITERATIONS=10
 
 
 cleanup() {
@@ -79,7 +79,7 @@ if gsutil -q stat "$GCS_INPUT"; then
   echo "Wikilinks déjà présent dans ${GCS_INPUT}."
 else
   echo "Téléchargement des liens wikilinks"
-  python src/data_fetcher.py $LIMIT_SIZE_CSV
+  python src/data_fetcher.py
 fi
 
 #======================================================================================================================
