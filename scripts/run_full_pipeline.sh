@@ -44,6 +44,8 @@ MACHINE_FAMILY="${MACHINE_FAMILY:-n4-highmem-2}"
 LIMIT_SIZE_CSV="${LIMIT_SIZE_CSV:-nan}"
 NUMBER_ITERATIONS="${NUMBER_ITERATIONS:-10}"
 
+SAVE_RESULTS="${SAVE_RESULTS:-true}"
+
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo "!! MACHINE_FAMILY=$MACHINE_FAMILY   NUMBER_WORKERS=$NUMBER_WORKERS    NUMBER_ITERATIONS=$NUMBER_ITERATIONS !!"
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
@@ -147,14 +149,16 @@ gcloud dataproc jobs submit pyspark "$GCS_JOB_PATH_DF" \
   -- $NUMBER_ITERATIONS $GCS_INPUT $GCS_OUTPUT_DF_BASE $PROJECT_ID $BUCKET $GCS_OUTPUT_DF_TIME
 
 # Récupération des résultats
-echo "Téléchargement des résultats depuis ${GCS_OUTPUT_DF_BASE} vers ${LOCAL_OUT_DIR}"
-mkdir -p "$LOCAL_OUT_DIR"
-gsutil -m cp -r "${GCS_OUTPUT_DF_BASE}" "$LOCAL_OUT_DIR/"
-gsutil -m cp -r "gs://${BUCKET}/${GCS_OUTPUT_DF_TIME}" "$LOCAL_OUT_DIR/"
-
-
-echo "Résultats téléchargés dans ${LOCAL_OUT_DIR}"
-
+if [ "$SAVE_RESULTS" = true ]; then
+  echo "Téléchargement des résultats depuis ${GCS_OUTPUT_DF_BASE} vers ${LOCAL_OUT_DIR}"
+  mkdir -p "$LOCAL_OUT_DIR"
+  gsutil -m cp -r "${GCS_OUTPUT_DF_BASE}" "$LOCAL_OUT_DIR/"
+  gsutil -m cp -r "gs://${BUCKET}/${GCS_OUTPUT_DF_TIME}" "$LOCAL_OUT_DIR/"
+  echo "Résultats téléchargés dans ${LOCAL_OUT_DIR}"
+else
+  echo "Les résultats devront être téléchargés à la main depuis $GCS_OUTPUT_RDD_BASE"
+fi
+  
 #======================================================================================================================
 # Experience avec les rdd
 echo "Upload du job src/rdd_pagerank.py -> ${GCS_JOB_PATH_RDD}"
@@ -168,14 +172,15 @@ gcloud dataproc jobs submit pyspark "$GCS_JOB_PATH_RDD" \
   --project="$PROJECT_ID" \
   -- $NUMBER_ITERATIONS $GCS_INPUT $GCS_OUTPUT_RDD_BASE $PROJECT_ID $BUCKET $GCS_OUTPUT_RDD_TIME
 
-# Récupération des résultats
-#echo "Téléchargement des résultats depuis ${GCS_OUTPUT_RDD_BASE} vers ${LOCAL_OUT_DIR}"
-echo "Les résultats devront être téléchargés à la main depuis $GCS_OUTPUT_RDD_BASE"
-mkdir -p "$LOCAL_OUT_DIR"
-#gsutil -m cp -r "${GCS_OUTPUT_RDD_BASE}" "$LOCAL_OUT_DIR/"
-#gsutil -m cp -r "gs://${BUCKET}/${GCS_OUTPUT_RDD_TIME}" "$LOCAL_OUT_DIR/"
-
-#echo "Résultats téléchargés dans ${LOCAL_OUT_DIR}"
+if [ "$SAVE_RESULTS" = true ]; then
+  echo "Téléchargement des résultats depuis ${GCS_OUTPUT_DF_BASE} vers ${LOCAL_OUT_DIR}"
+  mkdir -p "$LOCAL_OUT_DIR"
+  gsutil -m cp -r "${GCS_OUTPUT_RDD_BASE}" "$LOCAL_OUT_DIR/"
+  gsutil -m cp -r "gs://${BUCKET}/${GCS_OUTPUT_RDD_TIME}" "$LOCAL_OUT_DIR/"
+  echo "Résultats téléchargés dans ${LOCAL_OUT_DIR}"
+else
+  echo "Les résultats devront être téléchargés à la main depuis $GCS_OUTPUT_RDD_BASE"
+fi
 
 #======================================================================================================================
 # Suppression du cluster
