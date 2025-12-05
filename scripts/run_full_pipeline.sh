@@ -169,12 +169,13 @@ gcloud dataproc jobs submit pyspark "$GCS_JOB_PATH_RDD" \
   -- $NUMBER_ITERATIONS $GCS_INPUT $GCS_OUTPUT_RDD_BASE $PROJECT_ID $BUCKET $GCS_OUTPUT_RDD_TIME
 
 # Récupération des résultats
-echo "Téléchargement des résultats depuis ${GCS_OUTPUT_RDD_BASE} vers ${LOCAL_OUT_DIR}"
+#echo "Téléchargement des résultats depuis ${GCS_OUTPUT_RDD_BASE} vers ${LOCAL_OUT_DIR}"
+echo "Les résultats devront être téléchargés à la main depuis $GCS_OUTPUT_RDD_BASE"
 mkdir -p "$LOCAL_OUT_DIR"
-gsutil -m cp -r "${GCS_OUTPUT_RDD_BASE}" "$LOCAL_OUT_DIR/"
-gsutil -m cp -r "gs://${BUCKET}/${GCS_OUTPUT_RDD_TIME}" "$LOCAL_OUT_DIR/"
+#gsutil -m cp -r "${GCS_OUTPUT_RDD_BASE}" "$LOCAL_OUT_DIR/"
+#gsutil -m cp -r "gs://${BUCKET}/${GCS_OUTPUT_RDD_TIME}" "$LOCAL_OUT_DIR/"
 
-echo "Résultats téléchargés dans ${LOCAL_OUT_DIR}"
+#echo "Résultats téléchargés dans ${LOCAL_OUT_DIR}"
 
 #======================================================================================================================
 # Suppression du cluster
