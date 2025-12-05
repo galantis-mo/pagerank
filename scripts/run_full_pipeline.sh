@@ -43,6 +43,10 @@ MACHINE_FAMILY=n4-highmem-2
 
 LIMIT_SIZE_CSV=nan
 NUMBER_ITERATIONS=1
+
+echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+echo "!! MACHINE_FAMILY=$MACHINE_FAMILY   NUMBER_WORKERS=$NUMBER_WORKERS    NUMBER_ITERATIONS=$NUMBER_ITERATIONS !!"
+echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 # ------------------------------------------------------------------------------
 
 cleanup() {
