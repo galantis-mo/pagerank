@@ -37,12 +37,12 @@ TMPDIR="$(mktemp -d)"
 CLUSTER_CREATED=false
 
 # Conditions des experiences ---------------------------------------------------
-SINGLE_NODE="${SINGLE_NODE:-false}"
-NUMBER_WORKERS=6
-MACHINE_FAMILY=n4-highmem-2
+SINGLE_NODE="${SINGLE_NODE:-true}"
+NUMBER_WORKERS="${NUMBER_WORKERS:-1}"
+MACHINE_FAMILY="${MACHINE_FAMILY:-n4-highmem-2}"
 
-LIMIT_SIZE_CSV=nan
-NUMBER_ITERATIONS=1
+LIMIT_SIZE_CSV="${NUMBER_ITERATIONS:-nan}"
+NUMBER_ITERATIONS="${NUMBER_ITERATIONS:-10}"
 
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo "!! MACHINE_FAMILY=$MACHINE_FAMILY   NUMBER_WORKERS=$NUMBER_WORKERS    NUMBER_ITERATIONS=$NUMBER_ITERATIONS !!"
