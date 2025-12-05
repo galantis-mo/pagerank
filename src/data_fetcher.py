@@ -53,7 +53,7 @@ def DataFetcher(limit):
     try:
         with urllib.request.urlopen(request) as data:
             print("Sending request to \"https://downloads.dbpedia.org/repo/dbpedia/generic/wikilinks/2022.12.01/wikilinks_lang=en.ttl.bz2\" ...")
-            compressed_data = data.read(180000000)
+            compressed_data = data.read()
 
     except urllib.error.URLError as e:
         print("Fail to request or read wikilinks_lang=en.ttl.bz2:", e.reason)
@@ -62,7 +62,7 @@ def DataFetcher(limit):
     # Paths to important files
     storage_client = storage.Client(PROJECT_ID)
     bucket = storage_client.bucket(BUCKET_NAME)
-    blob = bucket.blob("data/wikilinks.csv")
+    blob = bucket.blob("data/wikilinks_full.csv")
     
     print("Will try to save to", BUCKET_NAME)
 
