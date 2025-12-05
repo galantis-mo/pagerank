@@ -14,8 +14,6 @@ CLUSTER_NAME="${CLUSTER_NAME:-dataprocpagepank}"
 REGION="${REGION:-europe-west1}"
 
 ZONE="${ZONE:-}"
-SINGLE_NODE="${SINGLE_NODE:-true}"
-NUMBER_WORKERS=1
 IMAGE_VERSION="${IMAGE_VERSION:-2.3-debian12}"
 
 # Security options
@@ -38,9 +36,14 @@ LOCAL_OUT_DIR="outputs/wikilinks"
 TMPDIR="$(mktemp -d)"
 CLUSTER_CREATED=false
 
-# Conditions des experiences
+# Conditions des experiences ---------------------------------------------------
+SINGLE_NODE="${SINGLE_NODE:-true}"
+NUMBER_WORKERS=1
+MACHINE_FAMILY=n4-highmem-2
+
 LIMIT_SIZE_CSV=1
 NUMBER_ITERATIONS=1
+# ------------------------------------------------------------------------------
 
 
 cleanup() {
@@ -119,8 +122,8 @@ else
     --region="$REGION" \
     $ZONE_ARG \
     $SUBNET_ARG \
-    --master-machine-type=n1-standard-1 \
-    --worker-machine-type=n1-standard-1 \
+    --master-machine-type=$MACHINE_FAMILY \
+    --worker-machine-type=$MACHINE_FAMILY \
     --master-boot-disk-size=50GB \
     --worker-boot-disk-size=50GB \
   --master-boot-disk-type=pd-ssd \
