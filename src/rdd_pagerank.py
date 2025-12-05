@@ -22,13 +22,13 @@ def to_csv(data):
     return ','.join(str(d) for d in data)
 
 def PageRank_RDD(nombre_iteration:int, input_path:str, output_dir:str, project_id:str, bucket_name:str, time_path:str):
+    start_time = time.time()
     # Creation de l'application
     spark = SparkSession.builder.appName("pagerank_rdd").getOrCreate()
     sc = spark.sparkContext
     
     data = sc.textFile(input_path).map(csv_reader)
 
-    start_time = time.time()
     # Partitionnement
     data = data.partitionBy(sc.defaultParallelism).persist()
 

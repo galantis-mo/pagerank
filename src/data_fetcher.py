@@ -4,7 +4,7 @@ import sys
 PROJECT_ID = os.environ['PROJECT_ID']
 BUCKET_NAME = os.environ['BUCKET']
 
-def save_to_csv(decompressor, csv_path, limit:int):
+def save_to_csv(decompressor, csv_path, limit):
     # Open the file in write mode
     file_csv = csv_path.open(mode="w", encoding="utf-8")
     file_csv.write('"";"')
@@ -43,7 +43,7 @@ def save_to_csv(decompressor, csv_path, limit:int):
     file_csv.close()
     return current_space_taken
 
-def DataFetcher(limit:int):
+def DataFetcher(limit):
     from google.cloud import storage
     import bz2    # To manage files
     import urllib.request       # To fetch file
@@ -79,8 +79,19 @@ def DataFetcher(limit:int):
 
 if __name__ == '__main__':
     if len(sys.argv) < 2 or not sys.argv[1].isdigit():
-        print("Donner la limite du fichier en entier !")
-        exit(2)
-    
-    # Appel de la méthode
-    DataFetcher(int(sys.argv[1])*1000000)
+        print("L'entièreté du fichier sera décompressé !")
+        DataFetcher(float('inf'))
+    else:
+        # Appel de la méthode
+        DataFetcher(int(sys.argv[1])*1000000)
+
+
+
+
+
+
+
+
+
+
+
