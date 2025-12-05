@@ -41,7 +41,7 @@ SINGLE_NODE="${SINGLE_NODE:-false}"
 NUMBER_WORKERS="${NUMBER_WORKERS:-2}"
 MACHINE_FAMILY="${MACHINE_FAMILY:-n4-highmem-2}"
 
-LIMIT_SIZE_CSV="${NUMBER_ITERATIONS:-nan}"
+LIMIT_SIZE_CSV="${LIMIT_SIZE_CSV:-nan}"
 NUMBER_ITERATIONS="${NUMBER_ITERATIONS:-10}"
 
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
