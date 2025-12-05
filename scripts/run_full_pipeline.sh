@@ -127,7 +127,7 @@ else
     --worker-boot-disk-size=50GB \
     --num-workers=$NUMBER_WORKERS \
     $NO_ADDRESS_ARG \
-    --properties=yarn:yarn.scheduler.maximum-allocation-mb=14336,yarn:yarn.nodemanager.resource.memory-mb=14336
+    --properties=yarn:yarn.scheduler.maximum-allocation-mb=14336,yarn:yarn.nodemanager.resource.memory-mb=14336\
     --image-version="$IMAGE_VERSION"
 fi
 
