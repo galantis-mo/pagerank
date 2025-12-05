@@ -45,7 +45,6 @@ LIMIT_SIZE_CSV=1
 NUMBER_ITERATIONS=1
 # ------------------------------------------------------------------------------
 
-
 cleanup() {
   rm -rf "$TMPDIR"jobs/
 
