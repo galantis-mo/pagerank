@@ -24,7 +24,7 @@ SUBNET="${SUBNET:-}"
 GCS_JOB_PATH_DF="gs://${BUCKET}/jobs/df_pagerank.py"
 GCS_JOB_PATH_RDD="gs://${BUCKET}/jobs/rdd_pagerank.py"
 
-GCS_INPUT="gs://${BUCKET}/data/wikilinks.csv"
+GCS_INPUT="gs://${BUCKET}/data/wikilinks_full.csv"
 GCS_OUTPUT_RDD_BASE="gs://${BUCKET}/outputs/wikilinks-rdd-$(date +"%Y-%m-%d_%H-%M-%S")"
 GCS_OUTPUT_RDD_TIME="outputs/time-rdd-$(date +"%Y-%m-%d_%H-%M-%S").csv"
 
