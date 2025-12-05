@@ -14,8 +14,6 @@ CLUSTER_NAME="${CLUSTER_NAME:-dataprocpagepank}"
 REGION="${REGION:-europe-west1}"
 
 ZONE="${ZONE:-}"
-SINGLE_NODE="${SINGLE_NODE:-false}"
-NUMBER_WORKERS=2
 IMAGE_VERSION="${IMAGE_VERSION:-2.3-debian12}"
 
 # Security options
@@ -26,7 +24,7 @@ SUBNET="${SUBNET:-}"
 GCS_JOB_PATH_DF="gs://${BUCKET}/jobs/df_pagerank.py"
 GCS_JOB_PATH_RDD="gs://${BUCKET}/jobs/rdd_pagerank.py"
 
-GCS_INPUT="gs://${BUCKET}/data/wikilinks.csv"
+GCS_INPUT="gs://${BUCKET}/data/wikilinks_full.csv"
 GCS_OUTPUT_RDD_BASE="gs://${BUCKET}/outputs/wikilinks-rdd-$(date +"%Y-%m-%d_%H-%M-%S")"
 GCS_OUTPUT_RDD_TIME="outputs/time-rdd-$(date +"%Y-%m-%d_%H-%M-%S").csv"
 
@@ -38,10 +36,18 @@ LOCAL_OUT_DIR="outputs/wikilinks"
 TMPDIR="$(mktemp -d)"
 CLUSTER_CREATED=false
 
-# Conditions des experiences
-LIMIT_SIZE_CSV=500
-NUMBER_ITERATIONS=10
+# Conditions des experiences ---------------------------------------------------
+SINGLE_NODE="${SINGLE_NODE:-false}"
+NUMBER_WORKERS=6
+MACHINE_FAMILY=n4-highmem-2
 
+LIMIT_SIZE_CSV=nan
+NUMBER_ITERATIONS=1
+
+echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+echo "!! MACHINE_FAMILY=$MACHINE_FAMILY   NUMBER_WORKERS=$NUMBER_WORKERS    NUMBER_ITERATIONS=$NUMBER_ITERATIONS !!"
+echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+# ------------------------------------------------------------------------------
 
 cleanup() {
   rm -rf "$TMPDIR"jobs/
@@ -79,7 +85,7 @@ if gsutil -q stat "$GCS_INPUT"; then
   echo "Wikilinks déjà présent dans ${GCS_INPUT}."
 else
   echo "Téléchargement des liens wikilinks"
-  python src/data_fetcher.py
+  python src/data_fetcher.py $LIMIT_SIZE_CSV
 fi
 
 #======================================================================================================================
@@ -119,13 +125,13 @@ else
     --region="$REGION" \
     $ZONE_ARG \
     $SUBNET_ARG \
-    --master-machine-type=n4-standard-4 \
-    --worker-machine-type=n4-standard-4 \
+    --master-machine-type=$MACHINE_FAMILY \
+    --worker-machine-type=$MACHINE_FAMILY \
     --master-boot-disk-size=50GB \
     --worker-boot-disk-size=50GB \
     --num-workers=$NUMBER_WORKERS \
     $NO_ADDRESS_ARG \
-    --properties=yarn:yarn.scheduler.maximum-allocation-mb=14336,yarn:yarn.nodemanager.resource.memory-mb=14336 \
+    --properties=yarn:yarn.scheduler.maximum-allocation-mb=14336,yarn:yarn.nodemanager.resource.memory-mb=14336\
     --image-version="$IMAGE_VERSION"
 fi
 
