@@ -125,8 +125,6 @@ else
     --worker-machine-type=$MACHINE_FAMILY \
     --master-boot-disk-size=50GB \
     --worker-boot-disk-size=50GB \
-  --master-boot-disk-type=pd-ssd \
-  --worker-boot-disk-type=pd-ssd \
     --num-workers=$NUMBER_WORKERS \
     $NO_ADDRESS_ARG \
     --properties=yarn:yarn.scheduler.maximum-allocation-mb=14336,yarn:yarn.nodemanager.resource.memory-mb=14336
