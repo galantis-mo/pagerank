@@ -1,28 +1,27 @@
 # pagerank
-Compute pagerank on a subset of wikipedia pages.
 
+Ce projet a pour objectif de manipuler des cluster sur Google Cloud afin de calculer le pagerank sur un échantillions des données de wikipédia disponible à ce lien : https://databus.dbpedia.org/dbpedia/generic/wikilinks/2022.12.01/wikilinks_lang=en.ttl.bz2
 
 ## Reproduction de l'expérience
 
 Configurer d'abord la machine virtuelle. Pour se faire :
 
-1. <a href="#création-du-bucket">Créer un bucket à partir de l'interface utilisateur.</a>
+1. Créer un bucket à partir de l'interface utilisateur. Pour se faire, se rendre sur la page [Buckets - Cloud Storage](https://console.cloud.google.com/storage/browser?referrer=search&cloudshell=true&hl=fr&prefix=&forceOnBucketsSortingFiltering=true&bucketType=live) et créer un nouveau bucket.
 2. Exporter les variables d'environnement nécessaire.
-3. Se placer dans le répertoire du projet `pagerank`.
-
-
-#### Création du bucket
-
-Se rendre sur la page [Buckets - Cloud Storage](https://console.cloud.google.com/storage/browser?referrer=search&cloudshell=true&hl=fr&prefix=&forceOnBucketsSortingFiltering=true&bucketType=live). Créer un nouveau bucke 
-```bash
-export PROJECT_ID=your-project-id
-export BUCKET=your-bucket-id
 ```
+export BUCKET=your-bucket-name
+export PROJECT_ID=your-project-id
+```
+3. Se placer dans le répertoire du projet `pagerank`.
+4. Pour chaque configuration, exécuter:
+```
+export NUMBER_WORKERS=the-number-of-nodes
+bash scrip/run_full_pipeline.sh
+```
+
 
 ##
 #### Pour exécuter un cluster de 6 noeuds
-
-
 Ajouter le rôle "Nœud de calcul Dataproc"
 
 storage.objects.get
