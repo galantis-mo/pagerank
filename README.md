@@ -31,8 +31,6 @@ storage.objects.update
 ```
 
 ## Résultats de nos expériences
-Sur les 10% des données, la page la plus référencée est &lt;http://dbpedia.org/resource/American_football&gt;.
-
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -304,7 +302,7 @@ Sur les 10% des données, la page la plus référencée est &lt;http://dbpedia.o
   </tbody>
 </table>
 
-Les expériences décrite ci-dessus on été realiser sur des machines de type : **n4-highmem-2**, dont voici les caractéristiques: 
+Les expériences décrites ci-dessus on été realisées sur des machines de type **n4-highmem-2**, dont voici les caractéristiques: 
 <table>
 <tr>
 <th>Serie</th>
@@ -319,17 +317,17 @@ Les expériences décrite ci-dessus on été realiser sur des machines de type :
 </table>
 
 L'ensemble des résultats obtenus pour 10 itérations avec les deux paradigmes que nous avons utilisés converge vers le même résultat, la page la plus référencée sur 10% des données est : 
-&lt; http://dbpedia.org/resource/American_football &gt; avec un rank de environ **62,6** pour chaque expérience.
+&lt; http://dbpedia.org/resource/American_football &gt; avec un rank de environ **62.6** pour chaque expérience.
 
-### temps d'éxécution :
+### Temps d'éxécution :
 
-Pour le temps d'exécution, il y a une grande différence entre le calcul RDD et le calcul DF. L'algorithme de dataFrame s'exécute entre 20-22 secondes alors que l'algorithme de rdd s'éxécute entre 1000 et 2000 seconde (en fonction du nombre de workers).
+Pour le temps d'exécution, il y a une grande différence entre le calcul RDD et le calcul DF. L'algorithme de DataFrame s'exécute entre 20-22 secondes alors que l'algorithme de rdd s'éxécute entre 1000 et 2000 seconde (en fonction du nombre de workers).
 
 Voyons maintenant l'influence du nombre de workers sur la vitesse de calcul du page rank :
 ![Logo](images/plot.png "graphique")
 
-Le graphique ci-dessus présente le temps d'exécution du pagerank en fonction du nombre de workers alloués dans le cluster. On peut voir que le temps d'exécution es tplus long pour 2 et 6 workers et que les éxécutions les plus courtes se sont fait à 4 workers. Le nombre de workers à alors une influence sur le temps d'éxécution, nous pensons qu'avec l'entièreté du fichier on aurai des meilleurs resultats pour 6 workers.
+Le graphique ci-dessus présente le temps d'exécution du pagerank en fonction du nombre de workers alloués dans le cluster. Nous observons que le temps d'exécution est plus long pour 2 et 6 workers et que les éxécutions les plus courtes se sont fait à 4 workers. Le nombre de workers à alors une influence sur le temps d'éxécution, nous pensons qu'avec l'entièreté du fichier nous obtiendrons des meilleurs resultats pour 6 workers.
 
-## conclusion : 
+## Conclusion : 
 
 Avec nos expériences, nous avons trouvé que le centre de Wikipédia avec les 10% des données est : &lt; http://dbpedia.org/resource/American_football &gt; avec un pagerank de **62.6**, et que le type d'algorithme et le nombre de noeuds à bien une influence sur le temps d'éxécution sur une telle quantité de données.
