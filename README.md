@@ -1,5 +1,9 @@
 # pagerank
 
+> Rémi MERVILLE (M2ALMA)
+> 
+> Monique RIMBERT (M2ATAL)
+
 Ce projet a pour objectif de manipuler des cluster sur Google Cloud afin de calculer le pagerank sur un échantillions des données de wikipédia disponible à ce lien : https://databus.dbpedia.org/dbpedia/generic/wikilinks/2022.12.01/wikilinks_lang=en.ttl.bz2
 
 ## Reproduction de l'expérience
