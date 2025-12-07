@@ -19,14 +19,15 @@ export NUMBER_WORKERS=the-number-of-nodes
 bash scrip/run_full_pipeline.sh
 ```
 
-
-##
 #### Pour exécuter un cluster de 6 noeuds
-Ajouter le rôle "Nœud de calcul Dataproc"
-
+S'ajouter le rôle "Nœud de calcul Dataproc" ou bien au moins les permissions suivantes :
+```
 storage.objects.get
 storage.objects.update
+```
 
+## Résultats de nos expériences
+Sur les 10% des données, la page la plus référencée est &lt;http://dbpedia.org/resource/American_football&gt;.
 
 <table border="1" class="dataframe">
   <thead>
