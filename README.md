@@ -62,7 +62,7 @@ storage.objects.update
       <td>&lt;http://dbpedia.org/resource/Category:Background_asteroids&gt;</td>
       <td>1034.093743</td>
       <td>0.919</td>
-      <td>0.919</td>
+      <td>df</td>
       <td>6</td>
       <td>n4-highmem-2</td>
       <td>20.968318</td>
@@ -73,7 +73,7 @@ storage.objects.update
       <td>&lt;http://dbpedia.org/resource/Category:Background_asteroids&gt;</td>
       <td>1034.093743</td>
       <td>0.919</td>
-      <td>0.919</td>
+      <td>rdd</td>
       <td>6</td>
       <td>n4-highmem-2</td>
       <td>197.200754</td>
@@ -84,7 +84,7 @@ storage.objects.update
       <td>&lt;http://dbpedia.org/resource/American_football&gt;</td>
       <td>63.250718</td>
       <td>0.919</td>
-      <td>0.919</td>
+      <td>df</td>
       <td>6</td>
       <td>n4-highmem-2</td>
       <td>21.387919</td>
@@ -95,7 +95,7 @@ storage.objects.update
       <td>&lt;http://dbpedia.org/resource/American_football&gt;</td>
       <td>63.250939</td>
       <td>0.919</td>
-      <td>0.919</td>
+      <td>rdd</td>
       <td>6</td>
       <td>n4-highmem-2</td>
       <td>1134.252870</td>
@@ -106,7 +106,7 @@ storage.objects.update
       <td>&lt;http://dbpedia.org/resource/American_football&gt;</td>
       <td>63.602773</td>
       <td>1.300</td>
-      <td>1.3</td>
+      <td>df</td>
       <td>2</td>
       <td>n4-highmem-2</td>
       <td>20.696074</td>
@@ -117,7 +117,7 @@ storage.objects.update
       <td>&lt;http://dbpedia.org/resource/American_football&gt;</td>
       <td>63.602994</td>
       <td>1.300</td>
-      <td>1.3</td>
+      <td>rdd</td>
       <td>2</td>
       <td>n4-highmem-2</td>
       <td>1896.579330</td>
@@ -128,7 +128,7 @@ storage.objects.update
       <td>&lt;http://dbpedia.org/resource/American_football&gt;</td>
       <td>63.602773</td>
       <td>1.300</td>
-      <td>1.3</td>
+      <td>df</td>
       <td>2</td>
       <td>n4-highmem-2</td>
       <td>20.429264</td>
@@ -139,7 +139,7 @@ storage.objects.update
       <td>&lt;http://dbpedia.org/resource/American_football&gt;</td>
       <td>63.602773</td>
       <td>1.300</td>
-      <td>1.3</td>
+      <td>df</td>
       <td>2</td>
       <td>n4-highmem-2</td>
       <td>21.720941</td>
@@ -150,7 +150,7 @@ storage.objects.update
       <td>&lt;http://dbpedia.org/resource/American_football&gt;</td>
       <td>63.602773</td>
       <td>1.300</td>
-      <td>1.3</td>
+      <td>df</td>
       <td>6</td>
       <td>n4-highmem-2</td>
       <td>22.054903</td>
@@ -161,7 +161,7 @@ storage.objects.update
       <td>&lt;http://dbpedia.org/resource/American_football&gt;</td>
       <td>63.602994</td>
       <td>1.300</td>
-      <td>1.3</td>
+      <td>rdd</td>
       <td>6</td>
       <td>n4-highmem-2</td>
       <td>1978.272810</td>
@@ -172,7 +172,7 @@ storage.objects.update
       <td>&lt;http://dbpedia.org/resource/American_football&gt;</td>
       <td>63.602773</td>
       <td>1.300</td>
-      <td>1.3</td>
+      <td>df</td>
       <td>6</td>
       <td>n4-highmem-2</td>
       <td>20.722589</td>
@@ -183,7 +183,7 @@ storage.objects.update
       <td>&lt;http://dbpedia.org/resource/American_football&gt;</td>
       <td>63.602994</td>
       <td>1.300</td>
-      <td>1.3</td>
+      <td>rdd</td>
       <td>6</td>
       <td>n4-highmem-2</td>
       <td>1329.799745</td>
@@ -194,7 +194,7 @@ storage.objects.update
       <td>&lt;http://dbpedia.org/resource/American_football&gt;</td>
       <td>63.602994</td>
       <td>1.300</td>
-      <td>1.3</td>
+      <td>rdd</td>
       <td>2</td>
       <td>n4-highmem-2</td>
       <td>1933.474102</td>
@@ -205,7 +205,7 @@ storage.objects.update
       <td>&lt;http://dbpedia.org/resource/American_football&gt;</td>
       <td>63.602994</td>
       <td>1.300</td>
-      <td>1.3</td>
+      <td>rdd</td>
       <td>2</td>
       <td>n4-highmem-2</td>
       <td>1893.842153</td>
@@ -216,7 +216,7 @@ storage.objects.update
       <td>&lt;http://dbpedia.org/resource/American_football&gt;</td>
       <td>63.602773</td>
       <td>1.300</td>
-      <td>1.3</td>
+      <td>df</td>
       <td>6</td>
       <td>n4-highmem-2</td>
       <td>21.538329</td>
@@ -227,7 +227,7 @@ storage.objects.update
       <td>&lt;http://dbpedia.org/resource/American_football&gt;</td>
       <td>63.602994</td>
       <td>1.300</td>
-      <td>1.3</td>
+      <td>rdd</td>
       <td>6</td>
       <td>n4-highmem-2</td>
       <td>1953.277361</td>
@@ -238,7 +238,7 @@ storage.objects.update
       <td>&lt;http://dbpedia.org/resource/American_football&gt;</td>
       <td>63.602773</td>
       <td>1.300</td>
-      <td>1.3</td>
+      <td>df</td>
       <td>4</td>
       <td>n4-highmem-2</td>
       <td>21.014864</td>
@@ -249,7 +249,7 @@ storage.objects.update
       <td>&lt;http://dbpedia.org/resource/American_football&gt;</td>
       <td>63.602994</td>
       <td>1.300</td>
-      <td>1.3</td>
+      <td>rdd</td>
       <td>4</td>
       <td>n4-highmem-2</td>
       <td>2074.499186</td>
@@ -260,7 +260,7 @@ storage.objects.update
       <td>&lt;http://dbpedia.org/resource/American_football&gt;</td>
       <td>63.602994</td>
       <td>1.300</td>
-      <td>1.3</td>
+      <td>rdd</td>
       <td>4</td>
       <td>n4-highmem-2</td>
       <td>1364.143054</td>
@@ -269,9 +269,9 @@ storage.objects.update
     <tr>
       <th>19</th>
       <td>&lt;http://dbpedia.org/resource/American_football&gt;</td>
-      <td>63.602994</td>
+      <td>63.602773</td>
       <td>1.300</td>
-      <td>1.3</td>
+      <td>df</td>
       <td>4</td>
       <td>n4-highmem-2</td>
       <td>20.732722</td>
@@ -282,18 +282,7 @@ storage.objects.update
       <td>&lt;http://dbpedia.org/resource/American_football&gt;</td>
       <td>63.602773</td>
       <td>1.300</td>
-      <td>1.3</td>
-      <td>4</td>
-      <td>n4-highmem-2</td>
-      <td>20.732722</td>
-      <td>10</td>
-    </tr>
-    <tr>
-      <th>21</th>
-      <td>&lt;http://dbpedia.org/resource/American_football&gt;</td>
-      <td>63.602773</td>
-      <td>1.300</td>
-      <td>1.3</td>
+      <td>df</td>
       <td>4</td>
       <td>n4-highmem-2</td>
       <td>20.425445</td>
@@ -317,16 +306,20 @@ Les expériences décrites ci-dessus on été realisées sur des machines de typ
 </table>
 
 L'ensemble des résultats obtenus pour 10 itérations avec les deux paradigmes que nous avons utilisés converge vers le même résultat, la page la plus référencée sur 10% des données est : 
-&lt; http://dbpedia.org/resource/American_football &gt; avec un rank de environ **62.6** pour chaque expérience.
+&lt;http://dbpedia.org/resource/American_football&gt;avec un rank de environ **62.6** pour chaque expérience.
 
-### Temps d'éxécution :
+### Temps d'exécution :
 
-Pour le temps d'exécution, il y a une grande différence entre le calcul RDD et le calcul DF. L'algorithme de DataFrame s'exécute entre 20-22 secondes alors que l'algorithme de rdd s'éxécute entre 1000 et 2000 seconde (en fonction du nombre de workers).
+Pour le temps d'exécution, il y a une grande différence entre le calcul RDD et le calcul DF. L'algorithme de DataFrame s'exécute entre 20-22 secondes  alors que l'algorithme de rdd s'éxécute entre 1000 et 2000 seconde (en fonction du nombre de workers).
+
+![Spark RDD](images/spark_rdd.png "graphique pour spark rdd")
+![Spark_DF](images/spark_df.png "graphique_pour_spark_df")
 
 Voyons maintenant l'influence du nombre de workers sur la vitesse de calcul du page rank :
 ![Logo](images/plot.png "graphique")
 
 Le graphique ci-dessus présente le temps d'exécution du pagerank en fonction du nombre de workers alloués dans le cluster. Nous observons que le temps d'exécution est plus long pour 2 et 6 workers et que les éxécutions les plus courtes se sont fait à 4 workers. Le nombre de workers à alors une influence sur le temps d'éxécution, nous pensons qu'avec l'entièreté du fichier nous obtiendrons des meilleurs resultats pour 6 workers.
+
 
 ## Conclusion : 
 
